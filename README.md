@@ -111,6 +111,15 @@ base_url = http://localhost:11434/v1
 api_type = openai
 api_key = <openai_apikey>
 
+; Qwen (Alibaba DashScope) service configuration with web search
+; Uses OpenAI-compatible API with extra_body parameters
+[qwen_service]
+api_type = openai
+api_key = <dashscope_api_key>
+base_url = https://dashscope.aliyuncs.com/compatible-mode/v1
+model = qwen-plus
+enable_search = true
+
 ; Groq service configuration
 ; Provide the 'api_key'.
 [groq_service]
@@ -127,6 +136,10 @@ model = mistral-small-latest
 ```
 
 In this configuration file, you can define multiple services with their own configurations. The required and optional parameters of the `api_type` are specified in `services/sevices.py`. Choose which service to use in the `[service]` section.
+
+### Using Qwen with Web Search
+
+To enable web search capabilities with Qwen (Alibaba DashScope), set `enable_search = true` in your configuration. This adds the `extra_body` parameter to API calls, which enables Qwen's web search functionality. This is particularly useful when you need the AI to have access to current information or when completing commands that might benefit from real-time data.
 
 6. Run `zsh`, start typing and complete it using `^X`!
 7. If you use virtual environments you can set `ZSH_CODEX_PYTHON` to python executable where `openai` or `google-generativeai` is installed.

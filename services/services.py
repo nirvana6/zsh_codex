@@ -27,6 +27,7 @@ class OpenAIClient(BaseClient):
         - organization (optional): defaults to None
         - model (optional): defaults to "gpt-4o-mini"
         - temperature (optional): defaults to 1.0.
+        - enable_search (optional): defaults to False. When True, adds extra_body parameter for web search (Qwen compatible).
     """
 
     api_type = "openai"
@@ -50,14 +51,22 @@ class OpenAIClient(BaseClient):
         )
 
     def get_completion(self, full_command: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.config["model"],
-            messages=[
+        # Prepare base parameters
+        params = {
+            "model": self.config["model"],
+            "messages": [
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": full_command},
             ],
-            temperature=float(self.config.get("temperature", 1.0)),
-        )
+            "temperature": float(self.config.get("temperature", 1.0)),
+        }
+        
+        # Add extra_body parameters if enable_search is True (for Qwen compatibility)
+        enable_search = self.config.get("enable_search", "false").lower() in ["true", "1", "yes"]
+        if enable_search:
+            params["extra_body"] = {"enable_search": True}
+        
+        response = self.client.chat.completions.create(**params)
         return response.choices[0].message.content
 
 
